@@ -16,17 +16,18 @@
 
 package org.infrastructurebuilder.util.artifacts;
 
+import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.maven.settings.Mirror;
-import org.apache.maven.settings.Server;
-import org.apache.maven.settings.Settings;
-import org.infrastructurebuilder.utils.settings.SettingsSupplier;
+import org.infrastructurebuilder.util.MirrorProxy;
+import org.infrastructurebuilder.util.ServerProxy;
+import org.infrastructurebuilder.util.SettingsProxy;
+import org.infrastructurebuilder.util.SettingsSupplier;
 
 public class IBRAComponentFromSettings implements IBRAFromSettingsFactory {
 
-  private final Settings settings;
+  private final SettingsProxy settings;
 
   public IBRAComponentFromSettings(final SettingsSupplier supplier) {
     settings = supplier.get();
@@ -35,25 +36,22 @@ public class IBRAComponentFromSettings implements IBRAFromSettingsFactory {
   @Override
   public ArtifactServices create(Optional<String> serverId, Optional<String> mirrorId, boolean normalize) {
 
-    Server server = Objects.requireNonNull(serverId)
-        .map(sid -> Optional.ofNullable(settings.getServer(sid)).orElse(new Server())).orElse(new Server());
+    ServerProxy server = Objects.requireNonNull(serverId).map(sid -> settings.getServer(sid).orElse(new ServerProxy()))
+        .orElse(new ServerProxy());
 
-    String remoteRepoUrl = Objects.requireNonNull(mirrorId)
-        .map(mid -> (settings.getMirrors().stream().filter(m -> mid.equals(m.getId())).findFirst().map(Mirror::getUrl))
-            .orElse(ArtifactServices.CENTRAL_REPO_URL))
-        .orElse(ArtifactServices.CENTRAL_REPO_URL);
-
-    String localRepo = settings.getLocalRepository();
+    URL remoteRepoUrl = Objects.requireNonNull(mirrorId).flatMap(mid -> settings.getMirror(mid)).map(MirrorProxy::getUrl).orElse(ArtifactServices.CENTRAL_REPO_URL);
+    String localRepo = settings.getLocalRepository().toAbsolutePath().toString();
     if (settings.isOffline()) {
-      server = new Server();
+      server = new ServerProxy();
       remoteRepoUrl = null;
     }
-    return new DefaultRepositoryAccess(localRepo, server.getUsername(), server.getPassword(), remoteRepoUrl, normalize);
+    return new DefaultRepositoryAccess(localRepo, server.getPrincipal().orElse(null), server.getSecret().orElse(null),
+        remoteRepoUrl.toExternalForm(), normalize);
   }
 
   @Override
   public ArtifactServices createLocal(boolean normalize) {
-    String localRepo = settings.getLocalRepository();
+    String localRepo = settings.getLocalRepository().toAbsolutePath().toString();
     return new DefaultRepositoryAccess(localRepo, null, null, null, normalize);
   }
 }

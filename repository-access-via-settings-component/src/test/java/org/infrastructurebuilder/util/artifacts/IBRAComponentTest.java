@@ -22,16 +22,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,19 +41,20 @@ import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
-import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.eclipse.aether.util.artifact.JavaScopes;
 import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
 import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.util.Layout;
+import org.infrastructurebuilder.util.MirrorProxy;
+import org.infrastructurebuilder.util.SettingsProxy;
+import org.infrastructurebuilder.util.SettingsSupplier;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
-import org.infrastructurebuilder.utils.settings.SettingsSupplier;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class IBRAComponentTest {
@@ -102,17 +103,13 @@ public class IBRAComponentTest {
 
     SettingsSupplier s2 = new SettingsSupplier() {
       @Override
-      public Settings get() {
-        Settings sss = new Settings();
-        Mirror mirror = new Mirror();
-        mirror.setId("mirrorId");
-        mirror.setUrl("http://www.example.org");
-        sss.addMirror(mirror);
-        sss.setLocalRepository(wps.get().toString());
-        sss.setOffline(true);
+      public SettingsProxy get() {
+        MirrorProxy mirror = new MirrorProxy("mirrorId", Layout.DEFAULT, Arrays.asList("*"), Collections.emptyList(),
+            "mirror", IBException.cet.withReturningTranslation(() -> new URL("http://www.example.org")));
+        SettingsProxy sss = new SettingsProxy(true, wps.get(), Charset.defaultCharset(), Collections.emptyList(),
+            Collections.emptyList(), Arrays.asList(mirror), Collections.emptyList(), Collections.emptyList());
         return sss;
       }
-
     };
 
     offline = new IBRAComponentFromSettings(s2);

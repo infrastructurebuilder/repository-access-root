@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -47,8 +48,12 @@ import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.IBUtils;
+import org.infrastructurebuilder.util.Layout;
+import org.infrastructurebuilder.util.MirrorProxy;
+import org.infrastructurebuilder.util.ServerProxy;
+import org.infrastructurebuilder.util.SettingsProxy;
+import org.infrastructurebuilder.util.SettingsSupplier;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import org.infrastructurebuilder.utils.settings.SettingsSupplier;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -58,7 +63,6 @@ import org.junit.Test;
 public class DefaultRepositoryAccessTest {
 
   private static final String CENTRAL = "https://repo.maven.apache.org/maven2/";
-
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -81,16 +85,15 @@ public class DefaultRepositoryAccessTest {
 
   private PlexusContainer c;
 
-  private Settings settings;
+  private SettingsProxy settings;
   private org.codehaus.plexus.classworlds.ClassWorld kw;
   private ContainerConfiguration dpcreq;
 
-
   @Before
   public void setUp() throws Exception {
-    Mirror falseMirror = new Mirror();
-    falseMirror.setUrl(CENTRAL);
-    List<Mirror> fList = Arrays.asList(falseMirror);
+    MirrorProxy falseMirror = new MirrorProxy("default", Layout.DEFAULT, Arrays.asList("*"), Collections.emptyList(),
+        "name", ArtifactServices.CENTRAL_REPO_URL);
+    List<MirrorProxy> fList = Arrays.asList(falseMirror);
 
     final String mavenCoreRealmId = "testing";
     kw = new ClassWorld(mavenCoreRealmId, getClass().getClassLoader());
@@ -101,17 +104,17 @@ public class DefaultRepositoryAccessTest {
         new WireModule(new SpaceModule(new URLClassSpace(kw.getClassRealm(mavenCoreRealmId)))));
     ss = c.lookup(SettingsSupplier.class);
     settings = ss.get();
-    pLocal = Paths.get(settings.getLocalRepository()).toAbsolutePath().toString();
-//    pLocal = Paths.get(System.getProperty("user.home"), ".m2", "repository").toAbsolutePath().toString();
+    pLocal = settings.getLocalRepository().toAbsolutePath().toString();
+    //    pLocal = Paths.get(System.getProperty("user.home"), ".m2", "repository").toAbsolutePath().toString();
     target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath()
         .toAbsolutePath();
     final Path pp = target.resolve("testrepo").toAbsolutePath();
-    Server testServer = Optional.ofNullable(settings.getServer("test"))
+    ServerProxy testServer = settings.getServer("test")
         .orElseThrow(() -> new IBException("The server 'test' must be in settings"));
-    List<Mirror> m = Optional.ofNullable(settings.getMirrors()).orElse(fList);
+    List<MirrorProxy> m = Optional.ofNullable(settings.getMirrors()).orElse(fList);
     if (m.size() == 0)
       m = fList;
-    Mirror mirrors = m.get(0); // FIXME maybe we need a test mirror?
+    MirrorProxy mirrors = m.get(0); // FIXME maybe we need a test mirror?
     IBUtils.deletePath(pp);
     assertFalse(pp.toString() + " does not exist ", Files.isDirectory(pp));
     Files.createDirectories(pp);
@@ -119,8 +122,8 @@ public class DefaultRepositoryAccessTest {
     pLocal = pp.toString();
     localRepoString = pLocal;
 
-    utils = new DefaultRepositoryAccess(pLocal, testServer.getUsername(), testServer.getPassword(), mirrors.getUrl(),
-        true);
+    utils = new DefaultRepositoryAccess(pLocal, testServer.getPrincipal().orElse(null),
+        testServer.getSecret().orElse(null), mirrors.getUrl().toExternalForm(), true);
 
     utilsLocal = new DefaultRepositoryAccess(localRepoString, null, null, null, true);
 

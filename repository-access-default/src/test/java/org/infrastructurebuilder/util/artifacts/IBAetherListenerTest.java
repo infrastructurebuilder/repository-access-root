@@ -47,7 +47,6 @@ import org.eclipse.aether.transfer.MetadataNotFoundException;
 import org.eclipse.aether.transfer.TransferCancelledException;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferResource;
-import org.infrastructurebuilder.util.artifacts.IBListener;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -59,7 +59,7 @@ public class IBRAMvnCtrlTest {
     assertTrue(pp.toString() + " does exist ", Files.isDirectory(pp));
     pLocal = pp.toString();
 
-    utils = new DefaultRepositoryAccess(pLocal, null, null, ArtifactServices.CENTRAL_REPO_URL, false);
+    utils = new DefaultRepositoryAccess(pLocal, null, null, ArtifactServices.CENTRAL_REPO_URL.toExternalForm(), false);
   }
 
   @After
