@@ -39,14 +39,15 @@ public class IBRAComponentFromSettings implements IBRAFromSettingsFactory {
     ServerProxy server = Objects.requireNonNull(serverId).map(sid -> settings.getServer(sid).orElse(new ServerProxy()))
         .orElse(new ServerProxy());
 
-    URL remoteRepoUrl = Objects.requireNonNull(mirrorId).flatMap(mid -> settings.getMirror(mid)).map(MirrorProxy::getUrl).orElse(ArtifactServices.CENTRAL_REPO_URL);
+    String remoteRepoUrl = Objects.requireNonNull(mirrorId).flatMap(mid -> settings.getMirror(mid))
+        .map(MirrorProxy::getUrl).orElse(ArtifactServices.CENTRAL_REPO_URL).toExternalForm();
     String localRepo = settings.getLocalRepository().toAbsolutePath().toString();
     if (settings.isOffline()) {
       server = new ServerProxy();
       remoteRepoUrl = null;
     }
     return new DefaultRepositoryAccess(localRepo, server.getPrincipal().orElse(null), server.getSecret().orElse(null),
-        remoteRepoUrl.toExternalForm(), normalize);
+        remoteRepoUrl, normalize);
   }
 
   @Override

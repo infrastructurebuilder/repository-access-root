@@ -105,7 +105,7 @@ public class IBRAComponentTest {
       @Override
       public SettingsProxy get() {
         MirrorProxy mirror = new MirrorProxy("mirrorId", Layout.DEFAULT, Arrays.asList("*"), Collections.emptyList(),
-            "mirror", IBException.cet.withReturningTranslation(() -> new URL("http://www.example.org")));
+            Optional.of("mirror"), IBException.cet.withReturningTranslation(() -> new URL("http://www.example.org")));
         SettingsProxy sss = new SettingsProxy(true, wps.get(), Charset.defaultCharset(), Collections.emptyList(),
             Collections.emptyList(), Arrays.asList(mirror), Collections.emptyList(), Collections.emptyList());
         return sss;
@@ -186,7 +186,7 @@ public class IBRAComponentTest {
   public void testImpossibleMirror() {
 
     ArtifactServices l = uFact.create(Optional.empty(), Optional.of("MAKESASDADQ#@E@#$#@$@#$"), true);
-    assertEquals(ArtifactServices.CENTRAL_REPO_URL, l.getRemoteRepo().get().toExternalForm());
+    assertEquals(ArtifactServices.CENTRAL_REPO_URL.toExternalForm(), l.getRemoteRepo().get().toExternalForm());
 
   }
 

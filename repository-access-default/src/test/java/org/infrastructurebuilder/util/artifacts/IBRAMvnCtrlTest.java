@@ -68,7 +68,7 @@ public class IBRAMvnCtrlTest {
 
   @Test
   public void testGetTrmeote() {
-    assertEquals(ArtifactServices.CENTRAL_REPO_URL, utils.getRemoteRepo().get().toExternalForm());
+    assertEquals(ArtifactServices.CENTRAL_REPO_URL.toExternalForm(), utils.getRemoteRepo().get().toExternalForm());
   }
 
   @Test

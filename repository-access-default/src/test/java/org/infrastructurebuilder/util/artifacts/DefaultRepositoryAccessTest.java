@@ -92,7 +92,7 @@ public class DefaultRepositoryAccessTest {
   @Before
   public void setUp() throws Exception {
     MirrorProxy falseMirror = new MirrorProxy("default", Layout.DEFAULT, Arrays.asList("*"), Collections.emptyList(),
-        "name", ArtifactServices.CENTRAL_REPO_URL);
+        Optional.of("name"), ArtifactServices.CENTRAL_REPO_URL);
     List<MirrorProxy> fList = Arrays.asList(falseMirror);
 
     final String mavenCoreRealmId = "testing";
