@@ -63,8 +63,6 @@ import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.eclipse.sisu.Typed;
 import org.infrastructurebuilder.IBException;
-import org.infrastructurebuilder.util.artifacts.ArtifactServices;
-import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

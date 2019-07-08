@@ -16,7 +16,6 @@
 
 package org.infrastructurebuilder.util.artifacts;
 
-import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 
