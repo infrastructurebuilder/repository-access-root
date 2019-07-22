@@ -59,7 +59,6 @@ import org.junit.Test;
 
 public class DefaultRepositoryAccessTest {
 
-  private static final String CENTRAL = "https://repo.maven.apache.org/maven2/";
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {

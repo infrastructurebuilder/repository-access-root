@@ -30,6 +30,7 @@ import static org.eclipse.aether.transfer.TransferEvent.EventType.PROGRESSED;
 import static org.eclipse.aether.transfer.TransferEvent.EventType.STARTED;
 import static org.eclipse.aether.transfer.TransferEvent.EventType.SUCCEEDED;
 import static org.joor.Reflect.on;
+import static org.joor.Reflect.onClass;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -163,7 +164,7 @@ public class IBAetherListenerTest {
   }
 
   private RepositoryEvent getRepositoryEvent(final EventType repositoryEventType, final boolean fail) {
-    final RepositoryEvent x = on(RepositoryEvent.class).create(new RepositoryEvent.Builder(drss, repositoryEventType))
+    final RepositoryEvent x = onClass(RepositoryEvent.class).create(new RepositoryEvent.Builder(drss, repositoryEventType))
         .get();
     on(x).set("artifact", new DefaultArtifact("junit:junit:2.99"));
     List<Exception> exceptions;
@@ -194,7 +195,7 @@ public class IBAetherListenerTest {
 
   private TransferEvent getTransferEvent(final TransferEvent.EventType transferEventType) {
     final TransferResource res = new TransferResource("repo", "http://www.google.com", "test", new File("."), null);
-    final TransferEvent x = on(TransferEvent.class).create(new TransferEvent.Builder(drss, res)).get();
+    final TransferEvent x = onClass(TransferEvent.class).create(new TransferEvent.Builder(drss, res)).get();
     on(x).set("type", transferEventType);
     return x;
   }
