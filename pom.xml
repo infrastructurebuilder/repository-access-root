@@ -31,7 +31,9 @@
 	<!-- URL for site gen -->
   <properties>
     <test.coverage.percentage.required>96</test.coverage.percentage.required>
-
+    <settings.supplier.version>0.9.3</settings.supplier.version>
+    <ibcore.bom.version>0.11.0.0</ibcore.bom.version>
+    <plexus.container.version>1.7.1</plexus.container.version>
   </properties>
   <url>${github.url.base}/${project.artifactId}</url>
   <scm>
@@ -45,7 +47,7 @@
       <dependency>
         <groupId>org.infrastructurebuilder.util</groupId>
         <artifactId>ibcore-bom</artifactId>
-        <version>0.11.0.0</version>
+        <version>${ibcore.bom.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -62,12 +64,12 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-container-default</artifactId>
-        <version>1.7.1</version>
+        <version>${plexus.container.version}</version>
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder.util</groupId>
         <artifactId>settings-supplier-component</artifactId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>${settings.supplier.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
