@@ -1,0 +1,42 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.infrastructurebuilder.utils.settings.EnvSupplier</role>
+      <implementation>org.infrastructurebuilder.utils.settings.DefaultEnvSupplier</implementation>
+    </component>
+    <component>
+      <role>org.infrastructurebuilder.utils.settings.PropertiesSupplier</role>
+      <implementation>org.infrastructurebuilder.utils.settings.DefaultPropertiesSupplier</implementation>
+    </component>
+    <component>
+      <role>org.infrastructurebuilder.utils.settings.SettingsSupplier</role>
+      <role-hint>test-settings-1</role-hint>
+      <implementation>org.infrastructurebuilder.utils.settings.LocalModifiableSettingsSupplier</implementation>
+      <description>Testing supplier from /test-settings-1.xml</description>
+      <isolated-realm>false</isolated-realm>
+      <configuration>
+        <settings-resource>/test-settings-1.xml</settings-resource>
+      </configuration>
+    </component>
+    <component>
+      <role>org.infrastructurebuilder.utils.settings.SettingsSupplier</role>
+      <role-hint>test-settings-2</role-hint>
+      <implementation>org.infrastructurebuilder.utils.settings.LocalModifiableSettingsSupplier</implementation>
+      <description>Testing supplier from /test-settings-2.xml</description>
+      <isolated-realm>false</isolated-realm>
+      <configuration>
+        <settings-resource>/test-settings-2.xml</settings-resource>
+      </configuration>
+    </component>
+    <component>
+      <role>org.infrastructurebuilder.utils.settings.SettingsSupplier</role>
+      <role-hint>test-settings-3</role-hint>
+      <implementation>org.infrastructurebuilder.utils.settings.LocalModifiableSettingsSupplier</implementation>
+      <description>Testing supplier from /test-settings-3.xml</description>
+      <isolated-realm>false</isolated-realm>
+      <configuration>
+        <settings-resource>/test-settings-3.xml</settings-resource>
+      </configuration>
+    </component>
+  </components>
+</component-set>
