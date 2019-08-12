@@ -17,6 +17,8 @@ package org.infrastructurebuilder.util.artifacts;
 
 import static org.junit.Assert.*;
 
+import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.util.auth.IBAuthenticationProducer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +36,8 @@ public class DefaultKohsukeGHSupplierTest extends AbstractGAFCTestingSetup {
   @Before
   public void setUp() throws Exception {
     superSetup();
-    this.kgs = getContainer().lookup(KohsukeGHSupplier.class);
+    this.kgs = new DefaultKohsukeGHSupplier(getSpi());
+//    this.kgs = getContainer().lookup(KohsukeGHSupplier.class);
   }
 
   @Test

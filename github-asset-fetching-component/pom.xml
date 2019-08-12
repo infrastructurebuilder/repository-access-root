@@ -31,7 +31,7 @@
 	<!-- URL for site gen -->
   <properties>
     <surefire.failIfNoTests>false</surefire.failIfNoTests>
-    <test.coverage.percentage.required>0</test.coverage.percentage.required>
+    <test.coverage.percentage.required>41</test.coverage.percentage.required>
     <jacoco.max.missed.classes>2</jacoco.max.missed.classes>
   </properties>
   <url>${github.url.base}/${project.artifactId}</url>

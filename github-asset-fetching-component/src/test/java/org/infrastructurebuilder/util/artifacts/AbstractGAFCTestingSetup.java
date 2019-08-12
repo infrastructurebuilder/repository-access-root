@@ -15,8 +15,15 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static org.infrastructurebuilder.IBConstants.GITHUB;
+import static org.junit.Assert.assertNotNull;
+
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.maven.settings.building.SettingsBuilder;
 import org.codehaus.plexus.ContainerConfiguration;
@@ -27,15 +34,22 @@ import org.codehaus.plexus.classworlds.ClassWorld;
 import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
+import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.util.PropertiesSupplier;
 import org.infrastructurebuilder.util.SettingsSupplier;
+import org.infrastructurebuilder.util.auth.DefaultAuthenticationProducerFactory;
+import org.infrastructurebuilder.util.auth.DefaultIBAuthentication;
+import org.infrastructurebuilder.util.auth.IBAuthentication;
+import org.infrastructurebuilder.util.auth.IBAuthenticationProducer;
+import org.infrastructurebuilder.util.auth.kohsuke.KohsukeGHAuthenticationProducer;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
+import org.json.JSONObject;
 
 public abstract class AbstractGAFCTestingSetup {
   private static final String TESTING = "testing";
   private static Path target;
   private static Path badSettings;
-//  private static String gsval;
+  //  private static String gsval;
   private static Map<String, String> defaultEnv;
   private static Path nonSettings;
   private static Path localRepoSettings;
@@ -55,72 +69,113 @@ public abstract class AbstractGAFCTestingSetup {
     wps.finalize();
   }
 
-
   private DefaultPlexusContainer c;
   private SettingsSupplier s;
-//  private PropertiesSupplier p;
+  //  private PropertiesSupplier p;
   private boolean isWindows;
   private org.codehaus.plexus.classworlds.ClassWorld kw;
   private ContainerConfiguration dpcreq;
   private SettingsBuilder dsb;
+  private DefaultAuthenticationProducerFactory spi;
+  private DefaultIBAuthentication a1;
+  private List<IBAuthentication> authsGood;
+
   public void superSetup() throws Exception {
 
-    final String mavenCoreRealmId = TESTING;
-    kw = new ClassWorld(mavenCoreRealmId, getClass().getClassLoader());
+    KohsukeGHAuthenticationProducer iba = new KohsukeGHAuthenticationProducer();
+    spi = new DefaultAuthenticationProducerFactory(new HashSet<>(Arrays.asList(iba)));
+    spi.setTemp(wps.get());
+    a1 = new DefaultIBAuthentication();
+    a1.setTarget("east1");
+    a1.setServerId("test");
+    a1.setType(GITHUB);
+    JSONObject servers = new JSONObject().put("test",
+        new JSONObject().put(IBConstants.USERNAME, "user").put(IBConstants.PASSWORD, "pw"));
+    a1 = (DefaultIBAuthentication) DefaultIBAuthentication.addJSON(a1, servers,
+        Optional.of("https:://api.github.com/v2"));
+    final DefaultIBAuthentication a2 = new DefaultIBAuthentication();
+    a2.setTarget("east1");
+    a2.setServerId("test");
+    a2.setType(GITHUB);
+    final DefaultIBAuthentication a3 = new DefaultIBAuthentication();
+    a3.setType(GITHUB);
+    a2.setTarget("east2");
 
-    dpcreq = new DefaultContainerConfiguration().setClassWorld(kw).setClassPathScanning(PlexusConstants.SCANNING_INDEX)
-        .setName(TESTING);
-    c = new DefaultPlexusContainer(dpcreq,
-        new WireModule(new SpaceModule(new URLClassSpace(kw.getClassRealm(TESTING)))));
+    authsGood = Arrays.asList(a1);
+    spi.setAuthentications(authsGood);
+
     isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-
-    PropertiesSupplier theseProps = c.lookup(PropertiesSupplier.class);
-    s = c.lookup(SettingsSupplier.class, "default");
-    dsb = c.lookup(SettingsBuilder.class);
+    //    final String mavenCoreRealmId = TESTING;
+    //    kw = new ClassWorld(mavenCoreRealmId, getClass().getClassLoader());
+    //
+    //    dpcreq = new DefaultContainerConfiguration().setClassWorld(kw).setClassPathScanning(PlexusConstants.SCANNING_INDEX)
+    //        .setName(TESTING);
+    //    c = new DefaultPlexusContainer(dpcreq,
+    //        new WireModule(new SpaceModule(new URLClassSpace(kw.getClassRealm(TESTING)))));
+    //
+    //    PropertiesSupplier theseProps = c.lookup(PropertiesSupplier.class);
+    //    s = c.lookup(SettingsSupplier.class, "default");
+    //    dsb = c.lookup(SettingsBuilder.class);
   }
+
+  public DefaultAuthenticationProducerFactory getSpi() {
+    return spi;
+  }
+
   public static String getTesting() {
     return TESTING;
   }
+
   public static Path getTarget() {
     return target;
   }
+
   public static Path getBadSettings() {
     return badSettings;
   }
+
   public static Map<String, String> getDefaultEnv() {
     return defaultEnv;
   }
+
   public static Path getNonSettings() {
     return nonSettings;
   }
+
   public static Path getLocalRepoSettings() {
     return localRepoSettings;
   }
+
   public static Path getNoLocalRepoSettings() {
     return noLocalRepoSettings;
   }
+
   public static WorkingPathSupplier getWps() {
     return wps;
   }
+
   public DefaultPlexusContainer getContainer() {
     return c;
   }
-  public SettingsSupplier getS() {
+
+  public SettingsSupplier getSettingsSupplier() {
     return s;
   }
+
   public boolean isWindows() {
     return isWindows;
   }
+
   public org.codehaus.plexus.classworlds.ClassWorld getKw() {
     return kw;
   }
+
   public ContainerConfiguration getDpcreq() {
     return dpcreq;
   }
+
   public SettingsBuilder getDsb() {
     return dsb;
   }
-
-
 
 }
