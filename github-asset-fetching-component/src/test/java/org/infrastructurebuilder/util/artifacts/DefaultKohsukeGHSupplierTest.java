@@ -15,8 +15,32 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import java.util.Optional;
+import static org.junit.Assert.*;
 
-public interface GithubArtifactResolver {
-  Optional<GAV> getFromGithubReleases(GAV source);
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class DefaultKohsukeGHSupplierTest extends AbstractGAFCTestingSetup {
+
+  @BeforeClass
+  public static void beforeSetup() throws Exception {
+    superSetUpBeforeClass();
+  }
+
+  private GithubReleaseArtifactMetaResolver gramr;
+  private KohsukeGHSupplier kgs;
+
+  @Before
+  public void setUp() throws Exception {
+    superSetup();
+    this.kgs = getContainer().lookup(KohsukeGHSupplier.class);
+  }
+
+  @Test
+  public void testGet() {
+    assertNotNull(this.kgs.get());
+    assertNotNull(this.kgs.getToken());
+  }
+
 }

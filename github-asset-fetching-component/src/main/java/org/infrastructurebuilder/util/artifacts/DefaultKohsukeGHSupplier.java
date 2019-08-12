@@ -15,41 +15,59 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.util.Optional.ofNullable;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
-import java.util.function.Function;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.auth.IBAuthException;
 import org.infrastructurebuilder.util.auth.IBAuthenticationProducerFactory;
-import org.infrastructurebuilder.util.auth.kohsuke.KohsukeGHAuthenticationProducer;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
+import org.kohsuke.github.extras.OkHttp3Connector;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
+import okhttp3.OkUrlFactory;
+
+@SuppressWarnings("deprecation")
+@Named(IBConstants.GITHUB)
 public class DefaultKohsukeGHSupplier implements KohsukeGHSupplier {
-  public final Function<Map<String, String>, Properties> mapSS2Properties = (m) -> {
-    Properties p = new Properties();
-    Objects.requireNonNull(m).entrySet().stream().forEach(e -> p.setProperty(e.getKey(), e.getValue()));
-    return p;
-  };
-  private final IBAuthenticationProducerFactory ibaf;
+
+  final private Properties props;
 
   @Inject
   public DefaultKohsukeGHSupplier(IBAuthenticationProducerFactory ibaf) {
-    this.ibaf = Objects.requireNonNull(ibaf);
+    this.props = IBUtils.mapSS2Properties.apply(ibaf.getEnvironmentForTypes(Arrays.asList(getId())));
   }
 
   @Override
   public GitHub get() {
-    // TODO Auto-generated method stub
-    return IBAuthException.et
-        .withReturningTranslation(() -> GitHubBuilder
-            .fromProperties(mapSS2Properties
-                .apply(ibaf.getEnvironmentForTypes(Arrays.asList(KohsukeGHAuthenticationProducer.KOHSUKE_TYPE))))
-            .build());
+    return IBAuthException.et.withReturningTranslation(() -> {
+      Path cacheDir = Files.createTempDirectory("OKhttp3Cache");
+      Cache cache = new Cache(cacheDir.toFile(), 10 * 1024 * 1024); // 10MB cache
+      GitHub gitHub = GitHubBuilder.fromProperties(this.props)
+          .withConnector(new OkHttp3Connector(new OkUrlFactory(new OkHttpClient.Builder().cache(cache).build())))
+          // Get the critter
+          .build();
+      return gitHub;
+    });
   }
 
+  @Override
+  public Optional<String> getToken() {
+    return ofNullable(this.props.getProperty("oauth", null));
+  }
+
+  String getId() {
+    return IBConstants.GITHUB;
+  }
 }

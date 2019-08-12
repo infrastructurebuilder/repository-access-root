@@ -80,13 +80,20 @@
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.auth</groupId>
+      <artifactId>ibauth-api</artifactId>
+      <version>0.9.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.util.auth</groupId>
       <artifactId>ibauth-factory</artifactId>
       <version>0.9.1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.auth</groupId>
       <artifactId>ibauth-kohsukegithub</artifactId>
       <version>0.9.1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util</groupId>
@@ -98,6 +105,11 @@
       <artifactId>iblogconfig</artifactId>
       <classifier>test</classifier>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp-urlconnection</artifactId>
+      <version>3.13.1</version>
     </dependency>
   </dependencies>
   <build>

@@ -15,12 +15,18 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
+/**
+ *
+ * @author mykel.alvis
+ *
+ */
 public interface KohsukeGHSupplier extends Supplier<GitHub> {
 
+  Optional<String> getToken();
 
 }

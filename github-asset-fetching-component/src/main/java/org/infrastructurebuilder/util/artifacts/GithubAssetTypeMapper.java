@@ -15,20 +15,35 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import java.util.function.BiFunction;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.kohsuke.github.GHAsset;
 
-/** Return true if the given GHAsset is what is desired based on the provided GAV.
- * This allows us to parse the list of assets for a given org and match them based
- * on (generally regex) criteria.  That is probably not a perfect method, but
- * the default code has already matched based on a required version, so it'll
- * work nearly all the time.
- *
- *
- * @author mykel.alvis
- *
- */
-public interface AssetTypeMapper extends BiFunction<GAV, GHAsset, Boolean>, IdentifiedAndWeighted {
+@Named(GithubAssetTypeMapper.GITHUB)
+@Singleton
+public class GithubAssetTypeMapper implements AssetTypeMapper {
+
+  static final String GITHUB = "github";
+
+  @Override
+  public Boolean apply(GAV t, GHAsset u) {
+    return (
+        // artifactId
+        u.getOwner().getName().equals(t.getArtifactId())
+        && //
+        u.getUrl().toExternalForm().contains(t.getVersion().orElse("@#@#$@#$nope"))
+        );
+  }
+
+  @Override
+  public String getId() {
+    return GITHUB;
+  }
+
+  @Override
+  public int getWeight() {
+    return 0;
+  }
 
 }
