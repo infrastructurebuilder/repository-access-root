@@ -16,7 +16,9 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static org.infrastructurebuilder.IBConstants.GITHUB;
-import static org.junit.Assert.*;
+import static org.infrastructurebuilder.IBConstants.ID;
+import static org.infrastructurebuilder.IBConstants.PASSWORD;
+import static org.infrastructurebuilder.IBConstants.USERNAME;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -39,7 +41,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.infrastructurebuilder.IBConstants.*;
 
 public class GithubReleaseArtifactMetaResolverTest extends AbstractGAFCTestingSetup {
 

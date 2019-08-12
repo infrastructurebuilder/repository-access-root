@@ -16,7 +16,6 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static org.infrastructurebuilder.IBConstants.GITHUB;
-import static org.junit.Assert.assertNotNull;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -27,20 +26,12 @@ import java.util.Optional;
 
 import org.apache.maven.settings.building.SettingsBuilder;
 import org.codehaus.plexus.ContainerConfiguration;
-import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusConstants;
-import org.codehaus.plexus.classworlds.ClassWorld;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
 import org.infrastructurebuilder.IBConstants;
-import org.infrastructurebuilder.util.PropertiesSupplier;
 import org.infrastructurebuilder.util.SettingsSupplier;
 import org.infrastructurebuilder.util.auth.DefaultAuthenticationProducerFactory;
 import org.infrastructurebuilder.util.auth.DefaultIBAuthentication;
 import org.infrastructurebuilder.util.auth.IBAuthentication;
-import org.infrastructurebuilder.util.auth.IBAuthenticationProducer;
 import org.infrastructurebuilder.util.auth.kohsuke.KohsukeGHAuthenticationProducer;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.json.JSONObject;

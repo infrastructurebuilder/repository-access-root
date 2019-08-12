@@ -15,10 +15,8 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
-import org.infrastructurebuilder.IBConstants;
-import org.infrastructurebuilder.util.auth.IBAuthenticationProducer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
