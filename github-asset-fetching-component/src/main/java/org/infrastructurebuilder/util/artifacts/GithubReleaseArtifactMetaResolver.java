@@ -68,11 +68,6 @@ public class GithubReleaseArtifactMetaResolver implements ArtifactMetaResolver {
     return IBConstants.GITHUB; // Override in other singletons for OTHER auth producer types
   }
 
-  @Override
-  public int getWeight() {
-    return 0; // Subtypes that use different identifiers should prob have different weights
-  }
-
   public final static BiFunction<Optional<String>, GHAsset, Path> fetchAsset = (token, asset) -> {
     // DOWNLOAD THE ASSET!
     return cet.withReturningTranslation(() -> {

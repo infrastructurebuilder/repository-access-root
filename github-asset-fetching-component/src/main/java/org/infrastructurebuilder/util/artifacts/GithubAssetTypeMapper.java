@@ -41,9 +41,4 @@ public class GithubAssetTypeMapper implements AssetTypeMapper {
     return GITHUB;
   }
 
-  @Override
-  public int getWeight() {
-    return 0;
-  }
-
 }
