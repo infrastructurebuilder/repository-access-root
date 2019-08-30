@@ -15,30 +15,17 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.junit.Before;
 
-import org.kohsuke.github.GHAsset;
+public class ADSAssetTypeMapperTest {
 
-@Named(GithubAssetTypeMapper.GITHUB)
-@Singleton
-public class GithubAssetTypeMapper implements AssetTypeMapper {
-
-  static final String GITHUB = "github";
-
-  @Override
-  public Boolean apply(GAV t, GHAsset u) {
-    return (
-        // artifactId
-        u.getOwner().getName().equals(t.getArtifactId())
-        && //
-        u.getUrl().toExternalForm().contains(t.getVersion().orElse("@#@#$@#$nope"))
-        );
+  @Before
+  public void setUp() throws Exception {
   }
 
-  @Override
-  public String getId() {
-    return GITHUB;
-  }
-
+//  @Test
+//  public void testApply() {
+//    fail("Not yet implemented");
+//  }
+//
 }

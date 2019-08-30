@@ -21,21 +21,21 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class DefaultKohsukeGHSupplierTest extends AbstractGAFCTestingSetup {
+public class ADSClientSupplierTest extends AbstractADSAFCTestingSetup {
 
   @BeforeClass
   public static void beforeSetup() throws Exception {
     superSetUpBeforeClass();
   }
 
-  private GithubArtifactMetaResolver gramr;
-  private KohsukeGHSupplier kgs;
+  private ADSArtifactMetaResolver gramr;
+  private ADSClientSupplier kgs;
 
   @Before
   public void setUp() throws Exception {
     superSetup();
-    this.kgs = new DefaultKohsukeGHSupplier(getSpi());
-//    this.kgs = getContainer().lookup(KohsukeGHSupplier.class);
+    this.kgs = new DefaultADSClientSupplier(getSpi());
+//    this.kgs = getContainer().lookup(ADSClientSupplier.class);
   }
 
   @Test

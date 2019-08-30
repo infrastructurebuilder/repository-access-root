@@ -15,17 +15,20 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import org.junit.Before;
+import java.util.function.BiFunction;
 
-public class GithubAssetTypeMapperTest {
+import org.infrastructurebuilder.util.artifacts.azuredevops.ADSAsset;
 
-  @Before
-  public void setUp() throws Exception {
-  }
+/** Return true if the given ADSAsset is what is desired based on the provided GAV.
+ * This allows us to parse the list of assets for a given org and match them based
+ * on (generally regex) criteria.  That is probably not a perfect method, but
+ * the default code has already matched based on a required version, so it'll
+ * work nearly all the time.
+ *
+ *
+ * @author mykel.alvis
+ *
+ */
+public interface ADSAssetTypeMapper extends BiFunction<GAV, ADSAsset, Boolean>, IdentifiedAndWeighted {
 
-//  @Test
-//  public void testApply() {
-//    fail("Not yet implemented");
-//  }
-//
 }

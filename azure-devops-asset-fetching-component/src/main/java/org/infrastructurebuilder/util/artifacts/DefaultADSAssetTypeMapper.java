@@ -15,20 +15,28 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import java.util.function.BiFunction;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-import org.kohsuke.github.GHAsset;
+import org.infrastructurebuilder.util.artifacts.azuredevops.ADSAsset;
+import static org.infrastructurebuilder.IBConstants.*;
+@Named(AZUREDEVOPS)
+@Singleton
+public class DefaultADSAssetTypeMapper implements ADSAssetTypeMapper {
 
-/** Return true if the given GHAsset is what is desired based on the provided GAV.
- * This allows us to parse the list of assets for a given org and match them based
- * on (generally regex) criteria.  That is probably not a perfect method, but
- * the default code has already matched based on a required version, so it'll
- * work nearly all the time.
- *
- *
- * @author mykel.alvis
- *
- */
-public interface AssetTypeMapper extends BiFunction<GAV, GHAsset, Boolean>, IdentifiedAndWeighted {
+  @Override
+  public Boolean apply(GAV t, ADSAsset u) {
+    return (
+        // artifactId
+        u.getOwner().getName().equals(t.getArtifactId())
+        && //
+        t.getVersion().map(v -> u.getUrl().toExternalForm().contains(v)).orElse(false)
+        );
+  }
+
+  @Override
+  public String getId() {
+    return AZUREDEVOPS;
+  }
 
 }
