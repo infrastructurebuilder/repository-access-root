@@ -1,3 +1,4 @@
+
 /**
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
@@ -13,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.infrastructurebuilder.util.artifacts.azuredevops;
 
 import java.net.URL;
@@ -26,7 +28,7 @@ public class DefaultADSReleaseEnvironment extends AbstractIdentifiedNamedXX<ADSR
     implements ADSReleaseEnvironment {
 
   public DefaultADSReleaseEnvironment(ADSRelease owner, JSONObject src) {
-    super(owner, src.getInt("releaseId"), src.optString("name", "UNNAMED"),
+    super(owner, new Integer(src.getInt("releaseId")).toString(), src.optString("name", "UNNAMED"),
         Optional.ofNullable(src.optString("description", null)));
   }
 }

@@ -1,3 +1,4 @@
+
 /**
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
@@ -13,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
 package org.infrastructurebuilder.util.artifacts.azuredevops;
 
 import static java.util.Objects.requireNonNull;
@@ -26,14 +29,14 @@ public abstract class AbstractIdentifiedNamedXX<O> {
   private final O owner;
   private final String name;
   private final Optional<String> description;
-  private final int id;
+  private final String id;
 
   public AbstractIdentifiedNamedXX(O owner, JSONObject src) {
-    this(owner, src.getInt("id"), src.optString("name", "UNNAMED"),
+    this(owner, new Integer(src.getInt("id")).toString(), src.optString("name", "UNNAMED"),
         Optional.ofNullable(src.optString("description", null)));
   }
 
-  AbstractIdentifiedNamedXX(O owner, int id, String name, Optional<String> description) {
+  AbstractIdentifiedNamedXX(O owner, String id, String name, Optional<String> description) {
     this.id = id;
     this.owner = requireNonNull(owner);
     this.name = requireNonNull(name);
@@ -52,7 +55,7 @@ public abstract class AbstractIdentifiedNamedXX<O> {
     return description;
   }
 
-  public int getId() {
+  public String getId() {
     return id;
   }
 }
