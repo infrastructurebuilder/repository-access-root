@@ -13,19 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.artifacts;
+package org.infrastructurebuilder.util.artifacts.azuredevops;
 
-import org.junit.Before;
-
-public class GithubAssetTypeMapperTest {
-
-  @Before
-  public void setUp() throws Exception {
-  }
-
-//  @Test
-//  public void testApply() {
-//    fail("Not yet implemented");
-//  }
-//
+public enum ADSArtifactType {
+  BUILD, JENKINS, GITHUB, NUGET, TEAM_BUILD_EXTERNAL, EXTERNALTFSBUILD, GIT, TFVC, EXTERNALTFSXAMLBUILD
 }

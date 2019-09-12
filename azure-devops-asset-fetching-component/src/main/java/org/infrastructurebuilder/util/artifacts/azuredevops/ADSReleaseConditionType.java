@@ -13,32 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.artifacts;
+package org.infrastructurebuilder.util.artifacts.azuredevops;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.kohsuke.github.GHAsset;
-
-@Named(GithubAssetTypeMapper.GITHUB)
-@Singleton
-public class GithubAssetTypeMapper implements AssetTypeMapper {
-
-  static final String GITHUB = "github";
-
-  @Override
-  public Boolean apply(GAV t, GHAsset u) {
-    return (
-        // artifactId
-        u.getOwner().getName().equals(t.getArtifactId())
-        && //
-        u.getUrl().toExternalForm().contains(t.getVersion().orElse("@#@#$@#$nope"))
-        );
-  }
-
-  @Override
-  public String getId() {
-    return GITHUB;
-  }
-
+public enum ADSReleaseConditionType {
+  ARTIFACT, ENVIRONMENTSTATE, EVENT, UNDEFINED
 }

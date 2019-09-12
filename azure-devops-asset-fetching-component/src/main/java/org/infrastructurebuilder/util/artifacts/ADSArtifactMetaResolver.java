@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,43 +34,50 @@ import javax.inject.Singleton;
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.IBUtils;
-import org.kohsuke.github.GHAsset;
+import org.infrastructurebuilder.util.artifacts.azuredevops.ADSAsset;
+import org.infrastructurebuilder.util.artifacts.azuredevops.ADSOrg;
+import org.infrastructurebuilder.util.artifacts.azuredevops.ADSProject;
+import org.infrastructurebuilder.util.artifacts.azuredevops.ADSRepo;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-@Named(IBConstants.GITHUB)
+/**
+ * a singleton component that produces a downloaded GAV, backed (probably) in the .cache directory of the repository.
+ *
+ *
+ * @author mykel.alvis
+ *
+ */
+@Named(IBConstants.AZUREDEVOPS)
 @Singleton
-public class GithubReleaseArtifactMetaResolver implements ArtifactMetaResolver {
-  public final static String NAME = "github";
+public class ADSArtifactMetaResolver implements ArtifactMetaResolver {
   private final GroupId2OrgMapper orgMapper;
   private final VersionMapper versionMapper;
-  private final AssetTypeMapper atm;
-  private final KohsukeGHSupplier ghs;
+  private final ADSAssetTypeMapper atm;
+  private final ADSClientSupplier ghs;
 
   @Inject
-  public GithubReleaseArtifactMetaResolver(KohsukeGHSupplier ghs, Map<String, GroupId2OrgMapper> o2gid,
-      Map<String, AssetTypeMapper> atm, Map<String, VersionMapper> versionMappers) {
-    //    this.ibaf = Objects.requireNonNull(ibaf);
+  public ADSArtifactMetaResolver(ADSClientSupplier ghs, Map<String, GroupId2OrgMapper> o2gid,
+      Map<String, ADSAssetTypeMapper> atm, Map<String, VersionMapper> versionMappers) {
     this.ghs = requireNonNull(ghs);
     this.orgMapper = ofNullable(o2gid.get(getId()))
         .orElseThrow(() -> new IBException("No GroupId2OrgMapper named " + getId()));
     this.versionMapper = ofNullable(versionMappers.get(getId()))
         .orElseThrow(() -> new IBException("No VersionMapper named " + getId()));
-    this.atm = ofNullable(atm.get(getId())).orElseThrow(() -> new IBException("No AssetTypeMapper named " + getId()));
+    this.atm = ofNullable(atm.get(getId())).orElseThrow(() -> new IBException("No ADSAssetTypeMapper named " + getId()));
 
   }
 
   @Override
   public String getId() {
-    return IBConstants.GITHUB; // Override in other singletons for OTHER auth producer types
+    return IBConstants.AZUREDEVOPS; // Override in other singletons for OTHER auth producer types
   }
 
-  public final static BiFunction<Optional<String>, GHAsset, Path> fetchAsset = (token, asset) -> {
+  public final static Path fetchAsset(Optional<String> token, ADSAsset asset, Path outs) {
     // DOWNLOAD THE ASSET!
     return cet.withReturningTranslation(() -> {
-      Path outs = Files.createTempFile("GH", ".tmp");
       OkHttpClient client = new OkHttpClient();
       Request.Builder request = new Request.Builder().url(asset.getUrl());
       token.ifPresent(t -> request.addHeader("Authorization", "token " + t));
@@ -82,15 +88,24 @@ public class GithubReleaseArtifactMetaResolver implements ArtifactMetaResolver {
       }
       return outs;
     });
-  };
+  }
 
   @Override
   public Optional<GAV> apply(GAV t) {
     if (requireNonNull(t).getFile().isPresent())
       return Optional.of(t); // First requirement fulfilled
-    return this.orgMapper.apply(t.getGroupId())
-        .flatMap(orgId -> cet.withReturningTranslation(() -> ofNullable(this.ghs.get().getOrganization(orgId))))
-        .flatMap(org -> cet.withReturningTranslation(() -> ofNullable(org.getRepository(t.getArtifactId()))))
+
+    Path outs = cet.withReturningTranslation(
+        () -> Files.createTempFile("ADS_" + t.getArtifactId() + t.getClassifier().map(c -> "-" + c).orElse("")
+            + t.getVersion().map(v -> "-" + v).orElse(""), "." + t.getExtension()));
+
+    String projectString = "getit";
+    Optional<ADSRepo> k =  this.orgMapper.apply(t.getGroupId())
+        .flatMap(orgId ->this.ghs.get().getOrganization(orgId))  // Got the Optional<ADSOrg>
+        .flatMap(org -> org.getProject(projectString))  // Got the project
+        .flatMap(repo -> repo.getRepository(t.getArtifactId()))  // got the Repo
+        ;
+        return k
         .flatMap(repo -> cet.withReturningTranslation(() -> this.versionMapper.apply(t)
             // Get the viable Taglist as a stream
             .stream().map(tag -> cet.withReturningTranslation(() -> ofNullable(repo.getReleaseByTagName(tag))))
@@ -103,7 +118,7 @@ public class GithubReleaseArtifactMetaResolver implements ArtifactMetaResolver {
         // find first
         .findFirst()
         // this is the first (and only) asset
-        .map(asset -> fetchAsset.apply(this.ghs.getToken(), asset))
+        .map(asset -> fetchAsset(this.ghs.getToken(), asset, outs))
         // Map it to a new GAV with the path set
         .map(t::withFile);
   }

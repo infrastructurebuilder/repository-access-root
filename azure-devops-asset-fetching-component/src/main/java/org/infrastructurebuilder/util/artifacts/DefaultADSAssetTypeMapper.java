@@ -15,33 +15,28 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.Assert.assertNotNull;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.infrastructurebuilder.util.artifacts.azuredevops.ADSAsset;
+import static org.infrastructurebuilder.IBConstants.*;
+@Named(AZUREDEVOPS)
+@Singleton
+public class DefaultADSAssetTypeMapper implements ADSAssetTypeMapper {
 
-public class DefaultKohsukeGHSupplierTest extends AbstractGAFCTestingSetup {
-
-  @BeforeClass
-  public static void beforeSetup() throws Exception {
-    superSetUpBeforeClass();
+  @Override
+  public Boolean apply(GAV t, ADSAsset u) {
+    return (
+        // artifactId
+        u.getOwner().getName().equals(t.getArtifactId())
+        && //
+        t.getVersion().map(v -> u.getUrl().toExternalForm().contains(v)).orElse(false)
+        );
   }
 
-  private GithubArtifactMetaResolver gramr;
-  private KohsukeGHSupplier kgs;
-
-  @Before
-  public void setUp() throws Exception {
-    superSetup();
-    this.kgs = new DefaultKohsukeGHSupplier(getSpi());
-//    this.kgs = getContainer().lookup(KohsukeGHSupplier.class);
-  }
-
-  @Test
-  public void testGet() {
-    assertNotNull(this.kgs.get());
-    assertNotNull(this.kgs.getToken());
+  @Override
+  public String getId() {
+    return AZUREDEVOPS;
   }
 
 }

@@ -13,22 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.artifacts;
+package org.infrastructurebuilder.util.artifacts.azuredevops;
 
-import java.util.function.BiFunction;
-
-import org.kohsuke.github.GHAsset;
-
-/** Return true if the given GHAsset is what is desired based on the provided GAV.
- * This allows us to parse the list of assets for a given org and match them based
- * on (generally regex) criteria.  That is probably not a perfect method, but
- * the default code has already matched based on a required version, so it'll
- * work nearly all the time.
- *
- *
- * @author mykel.alvis
- *
- */
-public interface AssetTypeMapper extends BiFunction<GAV, GHAsset, Boolean>, IdentifiedAndWeighted {
-
+public interface ADSClientHolder {
+  ADSClient getClient();
 }

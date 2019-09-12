@@ -15,33 +15,17 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
-public class DefaultKohsukeGHSupplierTest extends AbstractGAFCTestingSetup {
-
-  @BeforeClass
-  public static void beforeSetup() throws Exception {
-    superSetUpBeforeClass();
-  }
-
-  private GithubArtifactMetaResolver gramr;
-  private KohsukeGHSupplier kgs;
+public class ADSAssetTypeMapperTest {
 
   @Before
   public void setUp() throws Exception {
-    superSetup();
-    this.kgs = new DefaultKohsukeGHSupplier(getSpi());
-//    this.kgs = getContainer().lookup(KohsukeGHSupplier.class);
   }
 
-  @Test
-  public void testGet() {
-    assertNotNull(this.kgs.get());
-    assertNotNull(this.kgs.getToken());
-  }
-
+//  @Test
+//  public void testApply() {
+//    fail("Not yet implemented");
+//  }
+//
 }

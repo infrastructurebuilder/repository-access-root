@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>9</version>
+    <version>10-SNAPSHOT</version>
   </parent>
   <groupId>org.infrastructurebuilder.util.artifacts</groupId>
   <artifactId>repository-access-root</artifactId>
@@ -33,7 +33,7 @@
 	<!-- URL for site gen -->
   <properties>
     <test.coverage.percentage.required>96</test.coverage.percentage.required>
-    <settings.supplier.version>0.9.4-SNAPSHOT</settings.supplier.version>
+    <settings.supplier.version>0.10.0-SNAPSHOT</settings.supplier.version>
     <ibcore.bom.version>0.11.1.0-SNAPSHOT</ibcore.bom.version>
     <plexus.container.version>1.7.1</plexus.container.version>
   </properties>
@@ -96,5 +96,8 @@
     <module>repository-access-via-settings-component</module>
     <module>repository-access-config-model</module>
     <module>github-asset-fetching-component</module>
+    <!--
+     <module>azure-devops-asset-fetching-component</module>
+     -->
   </modules>
 </project>

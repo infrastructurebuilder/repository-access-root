@@ -19,7 +19,6 @@ import static org.infrastructurebuilder.IBConstants.GITHUB;
 import static org.infrastructurebuilder.IBConstants.ID;
 import static org.infrastructurebuilder.IBConstants.PASSWORD;
 import static org.infrastructurebuilder.IBConstants.USERNAME;
-import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -36,19 +35,19 @@ import org.infrastructurebuilder.util.auth.DefaultIBAuthentication;
 import org.infrastructurebuilder.util.auth.IBAuthentication;
 import org.infrastructurebuilder.util.auth.IBAuthenticationProducer;
 import org.infrastructurebuilder.util.auth.IBAuthenticationProducerFactory;
-import org.infrastructurebuilder.util.auth.kohsuke.KohsukeGHAuthenticationProducer;
+import org.infrastructurebuilder.util.auth.azuredevops.AzureDevopsAuthenticationProducer;
 import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class GithubReleaseArtifactMetaResolverTest extends AbstractGAFCTestingSetup {
+public class ADSReleaseArtifactMetaResolverTest extends AbstractADSAFCTestingSetup {
 
-  private GithubArtifactMetaResolver a;
-  private KohsukeGHSupplier ghs;
+  private ADSArtifactMetaResolver a;
+  private ADSClientSupplier ghs;
   private Map<String, GroupId2OrgMapper> o2gid;
-  private Map<String, GHAssetTypeMapper> atm;
+  private Map<String, ADSAssetTypeMapper> atm;
   private Map<String, VersionMapper> versionMappers;
   private IBAuthenticationProducerFactory ibaf;
   private Set<IBAuthenticationProducer> writers;
@@ -71,7 +70,7 @@ public class GithubReleaseArtifactMetaResolverTest extends AbstractGAFCTestingSe
     servers = new JSONObject();
     servers.put("A", new JSONObject().put(ID, "A").put(USERNAME, "username").put(PASSWORD, "password"));
     gav = new DefaultGAV("x:y:1.0.0");
-    writer1 = new KohsukeGHAuthenticationProducer();
+    writer1 = new AzureDevopsAuthenticationProducer();
     writers = new HashSet<>(Arrays.asList(writer1));
     iba1 = new DefaultIBAuthentication();
     iba1.setServerId("A");
@@ -83,17 +82,17 @@ public class GithubReleaseArtifactMetaResolverTest extends AbstractGAFCTestingSe
     ibaf = new DefaultAuthenticationProducerFactory(writers);
     ibaf.setTemp(temp);
     ibaf.setAuthentications(iBAuthentications);
-    ghs = new DefaultKohsukeGHSupplier(ibaf);
+    ghs = new DefaultADSClientSupplier(ibaf);
     o2gid = new HashMap<>();
     GroupId2OrgMapper omapper = new GithubIOGroupId2OrgMapper();
     o2gid.put(GITHUB, omapper);
     atm = new HashMap<>();
-    GHAssetTypeMapper atmm = new DefaultGHAssetTypeMapper();
+    ADSAssetTypeMapper atmm = new DefaultADSAssetTypeMapper();
     atm.put(GITHUB, atmm);
     versionMappers = new HashMap<>();
     VersionMapper vm = new GithubGenericReleaseVersionMapper();
     versionMappers.put(GITHUB, vm);
-    a = new GithubArtifactMetaResolver(ghs, o2gid, atm, versionMappers);
+    a = new ADSArtifactMetaResolver(ghs, o2gid, atm, versionMappers);
   }
 
   @AfterClass
