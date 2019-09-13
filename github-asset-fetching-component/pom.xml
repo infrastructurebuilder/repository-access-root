@@ -49,6 +49,7 @@
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
+      <classifier>no_aop</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
