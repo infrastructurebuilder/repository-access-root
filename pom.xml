@@ -95,8 +95,8 @@
     <module>repository-access-default</module>
     <module>repository-access-via-settings-component</module>
     <module>repository-access-config-model</module>
-    <module>github-asset-fetching-component</module>
     <!--
+    <module>github-asset-fetching-component</module>
      <module>azure-devops-asset-fetching-component</module>
      -->
   </modules>
