@@ -33,7 +33,7 @@
 	<!-- URL for site gen -->
   <properties>
     <test.coverage.percentage.required>96</test.coverage.percentage.required>
-    <settings.supplier.version>0.10.0-SNAPSHOT</settings.supplier.version>
+    <settings.supplier.version>0.10.0</settings.supplier.version>
     <ibcore.bom.version>0.11.1.0</ibcore.bom.version>
     <plexus.container.version>1.7.1</plexus.container.version>
   </properties>
