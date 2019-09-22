@@ -19,7 +19,6 @@ import static org.infrastructurebuilder.IBConstants.GITHUB;
 import static org.infrastructurebuilder.IBConstants.ID;
 import static org.infrastructurebuilder.IBConstants.PASSWORD;
 import static org.infrastructurebuilder.IBConstants.USERNAME;
-import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
 import java.util.Arrays;

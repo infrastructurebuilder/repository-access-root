@@ -15,12 +15,14 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>10</version>
+    <version>12</version>
   </parent>
   <groupId>org.infrastructurebuilder.util.artifacts</groupId>
   <artifactId>repository-access-root</artifactId>
@@ -31,9 +33,10 @@
 	<!-- URL for site gen -->
   <properties>
     <test.coverage.percentage.required>96</test.coverage.percentage.required>
-    <settings.supplier.version>0.10.0</settings.supplier.version>
-    <ibcore.bom.version>0.11.1.0</ibcore.bom.version>
+    <settings.supplier.version>0.10.1-SNAPSHOT</settings.supplier.version>
+    <ibcore.bom.version>0.11.2.0-SNAPSHOT</ibcore.bom.version>
     <plexus.container.version>1.7.1</plexus.container.version>
+    <ibauth.version>0.9.2-SNAPSHOT</ibauth.version>
   </properties>
   <url>${github.url.base}/${project.artifactId}</url>
   <scm>
@@ -70,6 +73,23 @@
         <groupId>org.infrastructurebuilder.util</groupId>
         <artifactId>settings-supplier-component</artifactId>
         <version>${settings.supplier.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder.util.auth</groupId>
+        <artifactId>ibauth-api</artifactId>
+        <version>${ibauth.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder.util.auth</groupId>
+        <artifactId>ibauth-factory</artifactId>
+        <version>${ibauth.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder.util.auth</groupId>
+        <artifactId>ibauth-kohsukegithub</artifactId>
+        <version>${ibauth.version}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
