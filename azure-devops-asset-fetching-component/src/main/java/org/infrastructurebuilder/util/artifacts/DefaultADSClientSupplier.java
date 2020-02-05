@@ -41,7 +41,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.OkUrlFactory;
 
 @SuppressWarnings("deprecation")
-@Named(IBConstants.GITHUB)
+@Named(IBConstants.AZUREDEVOPS)
 public class DefaultADSClientSupplier implements ADSClientSupplier {
 
   final private Properties props;

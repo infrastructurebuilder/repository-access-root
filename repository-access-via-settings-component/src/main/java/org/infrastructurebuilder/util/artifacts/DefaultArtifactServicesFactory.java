@@ -19,16 +19,21 @@ package org.infrastructurebuilder.util.artifacts;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.infrastructurebuilder.util.MirrorProxy;
 import org.infrastructurebuilder.util.ServerProxy;
 import org.infrastructurebuilder.util.SettingsProxy;
 import org.infrastructurebuilder.util.SettingsSupplier;
 
-public class IBRAComponentFromSettings implements IBRAFromSettingsFactory {
+@Named("default")
+public class DefaultArtifactServicesFactory implements ArtifactServicesFactory {
 
   private final SettingsProxy settings;
 
-  public IBRAComponentFromSettings(final SettingsSupplier supplier) {
+  @Inject
+  public DefaultArtifactServicesFactory(final SettingsSupplier supplier) {
     settings = supplier.get();
   }
 

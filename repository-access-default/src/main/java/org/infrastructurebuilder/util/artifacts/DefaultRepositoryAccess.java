@@ -16,6 +16,8 @@
 
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.IBConstants.PASSWORD;
 import static org.infrastructurebuilder.IBConstants.USERNAME;
 
@@ -28,7 +30,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -71,7 +72,7 @@ import org.slf4j.LoggerFactory;
 @Typed(ArtifactServices.class)
 public class DefaultRepositoryAccess implements ArtifactServices {
   public final static Function<Artifact, GAV> artifactToGAV = (art) -> {
-    final Path p = Optional.ofNullable(art.getFile()).map(p2 -> p2.toPath()).orElse(null);
+    final Path p = ofNullable(art.getFile()).map(p2 -> p2.toPath()).orElse(null);
     return new DefaultGAV(art.getGroupId(), art.getArtifactId(), art.getClassifier(), art.getVersion(),
         art.getExtension()).withFile(p);
   };
@@ -86,7 +87,7 @@ public class DefaultRepositoryAccess implements ArtifactServices {
 
   public static GAV fromArtifact(final Artifact a) {
     return new DefaultGAV(a.getGroupId(), a.getArtifactId(), a.getClassifier(), a.getVersion(), a.getExtension())
-        .withFile(Optional.ofNullable(a.getFile()).map(File::toPath).orElse(null));
+        .withFile(ofNullable(a.getFile()).map(File::toPath).orElse(null));
   }
 
   public final static Logger log = LoggerFactory.getLogger(DefaultRepositoryAccess.class);
@@ -123,19 +124,19 @@ public class DefaultRepositoryAccess implements ArtifactServices {
 
   public DefaultRepositoryAccess(final String localRepository, final String validatingUsername,
       final String validatingPassword, final String remoteRepositoryUrl, final boolean n) {
-    localRepoFile = Paths.get(Objects.requireNonNull(localRepository, "local repo")).toAbsolutePath();
-    Optional<String> user = Optional.ofNullable(validatingUsername);
-    Optional<String> password = Optional.ofNullable(validatingPassword);
-    Optional<String> remote = Optional.ofNullable(remoteRepositoryUrl);
-    _user = Objects.requireNonNull(user).orElse(null);
-    _password = Objects.requireNonNull(password).orElse(null);
-    _remote = Objects.requireNonNull(remote).orElse(null);
+    localRepoFile = Paths.get(requireNonNull(localRepository, "local repo")).toAbsolutePath();
+    Optional<String> user = ofNullable(validatingUsername);
+    Optional<String> password = ofNullable(validatingPassword);
+    Optional<String> remote = ofNullable(remoteRepositoryUrl);
+    _user = requireNonNull(user).orElse(null);
+    _password = requireNonNull(password).orElse(null);
+    _remote = requireNonNull(remote).orElse(null);
     _normalizeSnapshots = n;
     final HashMap<String, String> m = new HashMap<>();
     remote.map(u -> m.put(ArtifactServices.REMOTE_REPO_URL, u));
     m.put("maven.repo.local", localRepository);
-    user.map(u -> m.put(USERNAME, u));
-    password.map(u -> m.put(PASSWORD, u));
+    user.ifPresent(u -> m.put(USERNAME, u));
+    password.ifPresent(u -> m.put(PASSWORD, u));
 
     final Properties p = new Properties();
     p.putAll(m);
@@ -182,7 +183,7 @@ public class DefaultRepositoryAccess implements ArtifactServices {
     final List<String> splits = new ArrayList<>();
     splits.addAll(Arrays.asList(cpRoot.split(File.pathSeparator)));
     splits.forEach(i -> sj.add(i));
-    for (final GAV gav : Objects.requireNonNull(additional)) {
+    for (final GAV gav : requireNonNull(additional)) {
       for (final String item : Arrays.asList(getNlg(gav, scope).getClassPath().split(File.pathSeparator)))
         if (!eliminateEquivalentFiles || !splits.contains(item)) {
           splits.add(item);
@@ -213,18 +214,19 @@ public class DefaultRepositoryAccess implements ArtifactServices {
 
   @Override
   /**
-   * Always returns the local repo.  DefaultSettingsSupplier creates local repo if not previously present
+   * Always returns the local repo. DefaultSettingsSupplier creates local repo if
+   * not previously present
    */
   public Path getLocalRepo() {
     return localRepoFile;
   }
 
   public Optional<String> getPassword() {
-    return Optional.ofNullable(_password);
+    return ofNullable(_password);
   }
 
   public Optional<String> getRemote() {
-    return Optional.ofNullable(_remote);
+    return ofNullable(_remote);
   }
 
   @Override
@@ -237,7 +239,7 @@ public class DefaultRepositoryAccess implements ArtifactServices {
   }
 
   public Optional<String> getUser() {
-    return Optional.ofNullable(_user);
+    return ofNullable(_user);
   }
 
   public boolean isNormalizeSnapshots() {
@@ -305,7 +307,7 @@ public class DefaultRepositoryAccess implements ArtifactServices {
             getRemote().orElseThrow(() -> new IBException("No remote repo URL supplied"))).build();
       }
     }
-    return Optional.ofNullable(remoteRef);
+    return ofNullable(remoteRef);
   }
 
   protected void configureRepositorySystem(final boolean useGuice) {

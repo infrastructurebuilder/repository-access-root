@@ -83,7 +83,6 @@ package org.infrastructurebuilder;
 //    Optional.ofNullable(System.getenv("MAVEN_HOME")).orElse(home + "/.sdkman/candidates/maven/current/");
 //
 //    gavNoClassifier = new DefaultGAV("io.test:testArtifact:1.0.0:jar:");
-//    cfNoClassifier = new DefaultGAV("io.test:testArtifact:1.0.0:cleanfuel:");
 //    gavClassifier = new DefaultGAV("io.test:testArtifact:1.0.0:jar:class");
 //  }
 //

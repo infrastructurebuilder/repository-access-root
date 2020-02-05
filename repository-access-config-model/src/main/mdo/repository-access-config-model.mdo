@@ -51,11 +51,7 @@
         <field>
           <name>description</name>
           <version>1.0.0+</version>
-          <description>A detailed description of the project, used whenever the system needs to
-            describe the project. While this element can be specified as
-            CDATA to enable the use of HTML tags within the description, it is discouraged to allow
-            plain text representation. If you need to modify the index page of the generated web
-            site, you are able to specify your own instead of adjusting this text.</description>
+          <description>A detailed description of the persisted model.</description>
           <type>String</type>
         </field>
         <field>
@@ -163,8 +159,7 @@
           <name>inclusions</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>INCLUSION Restricters for this config's instance. Inclusions override exclusions.  Also, this
-          only applies to the initial artifact to be resolved, not transitive dependencies.</description>
+          <description>INCLUSION Restricters for this config's instance. Inclusions override exclusions.</description>
           <association>
             <type>Restriction</type>
             <multiplicity>*</multiplicity>
@@ -174,8 +169,7 @@
           <name>exclusions</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>EXCLUSION Restricters for this config's instance. Inclusions override exclusions.  Also, this
-          only applies to the initial artifact to be resolved, not transitive dependencies.</description>
+          <description>EXCLUSION Restricters for this config's instance. Inclusions override exclusions.</description>
           <association>
             <type>Restriction</type>
             <multiplicity>*</multiplicity>

@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,21 +49,13 @@ import org.infrastructurebuilder.util.MirrorProxy;
 import org.infrastructurebuilder.util.SettingsProxy;
 import org.infrastructurebuilder.util.SettingsSupplier;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import org.infrastructurebuilder.util.config.WorkingPathSupplier;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class IBRAComponentTest {
+public class DefaultArtifactServicesFactoryTest {
 
-  private static Path target;
-  private final static WorkingPathSupplier wps = new WorkingPathSupplier();
-
-  @BeforeClass
-  public static void beforeClass() throws Exception {
-    target = wps.getRoot();
-
-  }
+  private final static TestingPathSupplier wps = new TestingPathSupplier();
 
   private DefaultPlexusContainer container;
   private String pLocal;
@@ -74,9 +65,9 @@ public class IBRAComponentTest {
   private static ClassWorld kw;
 
   private static ContainerConfiguration dpcreq;
-  private IBRAComponentFromSettings uFact;
+  private DefaultArtifactServicesFactory uFact;
   private ArtifactServices utilsLocal;
-  private IBRAComponentFromSettings offline;
+  private DefaultArtifactServicesFactory offline;
   private ArtifactServices utils2;
 
   @Before
@@ -89,11 +80,11 @@ public class IBRAComponentTest {
         .setName(mavenCoreRealmId);
     container = new DefaultPlexusContainer(dpcreq,
         new WireModule(new SpaceModule(new URLClassSpace(kw.getClassRealm(mavenCoreRealmId)))));
-    root = target.resolve(UUID.randomUUID().toString());
+    root = wps.get();
     Files.createDirectories(root);
     pLocal = root.toString();
     SettingsSupplier ss = container.lookup(SettingsSupplier.class);
-    uFact = new IBRAComponentFromSettings(ss);
+    uFact = new DefaultArtifactServicesFactory(ss);
     utils = uFact.create(Optional.empty(), Optional.empty(), true);
     utils2 = uFact.create(Optional.of("probably@#$@#$@#$notpossible"), Optional.of("probablyimPOSSI#@$@#$@#$IBVLE"),
         false);
@@ -110,7 +101,7 @@ public class IBRAComponentTest {
       }
     };
 
-    offline = new IBRAComponentFromSettings(s2);
+    offline = new DefaultArtifactServicesFactory(s2);
 
   }
 
@@ -150,7 +141,8 @@ public class IBRAComponentTest {
 
   @Test
   public void testOffline() {
-    ArtifactServices o = offline.create(Optional.empty(), Optional.of("mirrorId"), true);// Still gonna be local because offline
+    ArtifactServices o = offline.create(Optional.empty(), Optional.of("mirrorId"), true);// Still gonna be local because
+                                                                                         // offline
     assertFalse(o.getRemoteRepo().isPresent());
   }
 

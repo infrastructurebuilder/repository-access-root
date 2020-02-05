@@ -17,15 +17,27 @@ package org.infrastructurebuilder.util.artifacts;
 
 import java.util.Optional;
 
-public interface IBRAFromSettingsFactory {
+public interface ArtifactServicesFactory {
   /**
-   * Create ArtifactServices directly from the settings provided.  Local repo is provided by Injected Settings
-   * @param serverId get the Server entry from the injected SettingsSupplier Settings.Servers in IBRAComponentFromSettings
-   * @param mirrorId get the Remote repo url from the injected SettingsSupplier Settings.Mirrors in IBRAComponentFromSettings
+   * Create ArtifactServices directly from the settings provided. Local repo is
+   * provided by Injected Settings
+   *
+   * @param serverId  get the Server entry from the injected SettingsSupplier
+   *                  Settings.Servers in IBRAComponentFromSettings
+   * @param mirrorId  get the Remote repo url from the injected SettingsSupplier
+   *                  Settings.Mirrors in IBRAComponentFromSettings
    * @param normalize normalize snapshots
    * @return Configured ArtifactServices instance
    */
   ArtifactServices create(Optional<String> serverId, Optional<String> mirrorId, boolean normalize);
-  ArtifactServices createLocal( boolean normalize);
+
+  /**
+   * Create an {@link ArtifactServices} instance utilizing only the
+   * already-resolved (i.e. offline) local artifact
+   *
+   * @param normalize Normalize snapshot versions
+   * @return offline instance of {@link ArtifactServices}
+   */
+  ArtifactServices createLocal(boolean normalize);
 
 }
